@@ -14,66 +14,50 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <!--  apply css of our static folder-->
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/crm.css}">
     <title th:text="${title}">Base html</title>
 
 <!--    javascript jquery-->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 
 </head>
-<body>
+<body class="crm-app">
 
-<!--start navbar-->
-<nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Smart Contact Manager</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-        <ul class="navbar-nav ml-auto text-uppercase">
-
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/}" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#" tabindex="-1" aria-disabled="true"><span th:text="${user.name}"></span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}" href="#" tabindex="-1" aria-disabled="true">Logout</a>
-            </li>
-        </ul>
+<header class="crm-topbar">
+    <button type="button" onclick="toggleSidebar()" class="sidebar-toggle" aria-label="Toggle sidebar" aria-controls="workspace-sidebar" aria-expanded="true"><i class="fas fa-bars" aria-hidden="true"></i></button>
+    <div class="search-container global-search">
+        <label for="global-search" class="sr-only">Search contacts by name</label>
+        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+        <input id="global-search" data-contact-search type="search" class="form-control" placeholder="Search your contacts by name" autocomplete="off" aria-controls="global-search-results" aria-expanded="false">
+        <div id="global-search-results" class="search-result" aria-live="polite"></div>
     </div>
-</nav>
-<!--end navbar-->
-
-<!--this is sidebar-->
-<div class="sidebar mt-2">
-
-    <!--    cross button-->
-
-    <span onclick="toggleSidebar()" class="crossBtn">&times;</span>
-
-    <a id="home-link" href="#" th:href="@{/user/index}" class="item"><i class="fa-solid fa-house"></i> Home</a>
-    <a id="contacts-link" href="#" th:href="@{/user/show-contacts/0}" class="item"><i class="fas fa-id-card-alt"></i> View Contacts</a>
-    <a id="add-link" href="#" th:href="@{/user/add-contact}" class="item"><i class="fas fa-pencil-alt"></i> Add Contact</a>
-    <a id="profile-link" href="#" th:href="@{/user/profile}" class="item"><i class="fas fa-user-circle"></i> View Profile</a>
-    <a id="settings-link" href="#" th:href="@{/user/settings}" class="item"><i class="fas fa-cogs"></i> Settings</a>
-    <a id="logout-link" href="#" th:href="@{/logout}" class="item"><i class="fas fa-sign-out-alt"></i> Logout</a>
-
-    <div class="divider"></div>
-</div>
-<!--end of the sidebar-->
-
-<!--this is content area-->
-<div class="content mt-5">
-
-    <i onclick="toggleSidebar()" class="fas fa-bars m-3"></i>
-
-    <!--    message box-->
+    <div class="topbar-actions">
+        <a class="btn btn-primary" aria-label="Add new contact" th:href="@{/user/add-contact}"><i class="fas fa-plus" aria-hidden="true"></i> <span>New contact</span></a>
+        <a class="account-menu" th:href="@{/user/profile}">
+            <span class="letter-avatar" th:text="${#strings.substring(user.name,0,1)}"></span>
+            <span class="account-name"><strong th:text="${user.name}"></strong><small th:text="${user.role == 'ROLE_ADMIN' ? 'Administrator' : 'Personal account'}"></small></span>
+        </a>
+        <a class="icon-link" th:href="@{/logout}" aria-label="Sign out" title="Sign out"><i class="fas fa-sign-out-alt" aria-hidden="true"></i></a>
+    </div>
+</header>
+<aside id="workspace-sidebar" class="sidebar">
+    <a class="crm-brand" th:href="@{/user/index}"><span class="brand-icon"><i class="fas fa-address-book" aria-hidden="true"></i></span> Smart CRM</a>
+    <div class="workspace-label"><i class="far fa-address-book" aria-hidden="true"></i> Personal contacts</div>
+    <p class="sidebar-caption">Main menu</p>
+    <nav aria-label="Workspace navigation">
+        <a id="home-link" th:href="@{/user/index}" class="item"><i class="fas fa-th-large" aria-hidden="true"></i> Dashboard / Overview</a>
+        <a id="contacts-link" th:href="@{/user/show-contacts/0}" class="item"><i class="fas fa-users" aria-hidden="true"></i> All contacts <span class="nav-count" th:text="${#lists.size(user.contacts)}"></span></a>
+        <a id="add-link" th:href="@{/user/add-contact}" class="item"><i class="fas fa-user-plus" aria-hidden="true"></i> Add contact</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <p class="sidebar-caption">Preferences</p>
+        <a id="profile-link" th:href="@{/user/profile}" class="item"><i class="far fa-user-circle" aria-hidden="true"></i> User profile</a>
+        <a id="settings-link" th:href="@{/user/settings}" class="item"><i class="fas fa-cog" aria-hidden="true"></i> Settings</a>
+        <a th:href="@{/}" class="item"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to website</a>
+    </div>
+</aside>
+<main class="content">
+<!--    message box-->
     <div th:if="${session.message}" class="container">
         <div th:classappend="${'alert-' +session.message.type}" class="alert text-center" role="alert">
             <span th:text="${session.message.content}"></span>
@@ -85,7 +69,7 @@
     </div>
 
     <div th:replace="${contant}"></div>
-</div>
+</main>
 
 <!--end of the content area-->
 

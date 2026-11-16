@@ -5,13 +5,16 @@
     <title>This is home page</title>
 </head>
 <body>
-    <section class="banner d-flex justify-content-center align-items-center">
-        <div class="text-center">
-            <h1 class="font-weight-bold">Smart Contact Manager</h1>
-            <p>Start Collecting all your contacts in very smarter way. We provide very efficient
-            and smarter way of handling your contacts.
-            </p>
-            <button class="btn bg-primary btn-lg text-white">Get Started</button>
+    <section class="banner">
+        <div class="hero-copy">
+            <span class="eyebrow">A little more organized</span>
+            <h1>Your contacts.<br><span>Simply connected.</span></h1>
+            <p>A calm, simple place to keep the people who matter. Save, find, and manage your contacts with ease.</p>
+            <div class="hero-actions">
+                <a th:href="@{/signup}" class="btn btn-primary">Get started &rarr;</a>
+                <a th:href="@{/signin}" class="btn btn-outline-primary">Sign in</a>
+            </div>
+            <small class="hero-note">Less searching. More connecting.</small>
         </div>
     </section>
 </body>

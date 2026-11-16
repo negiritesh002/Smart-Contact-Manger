@@ -1,28 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "http://www.thymeleaf.org" th:replace = "normal/base::Layout(~{::section})">
-<head>
-    <meta charset="UTF-8">
-    <title>This is dashboard page</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{normal/base::Layout(~{::section})}">
+<head><meta charset="UTF-8"><title>Smart CRM</title></head><body>
 <section>
-    <div class="container">
-        <div class="card">
-            <div class="card-body">
-                <div class="container text-center">
-                    <img src="" style="height: 200px ; width: 200px;" class="my_profile_picture" th:src="@{'/img/contact.jpg'}" alt="profile image">
-                    <h1 class="text-center mt-3 text-secondary font-weight-light font-italic">Start Adding Your Contacts on cloud</h1>
-                    <a th:href="@{/user/add-contact}" class="btn btn-primary btn-block text-uppercase mt-3">Add New Contact</a>
-                </div>
-            </div>
-        </div>
+<div class="welcome-panel">
+    <div><div class="eyebrow"><span class="status-dot"></span> Personal workspace</div>
+        <h1>Welcome back, <span th:text="${user.name}"></span></h1>
+        <p>One place for your contacts and connections.</p>
     </div>
-    <script>
-        $(document).ready(() => {
-            $(".item").removeClass("active");
-            $("#home-link").addClass("active");
-        });
-    </script>
+    <a class="btn btn-primary" th:href="@{/user/add-contact}"><i class="fas fa-user-plus" aria-hidden="true"></i> Add contact</a>
+</div>
+<div class="overview-stats">
+    <a class="stat-card" th:href="@{/user/show-contacts/0}"><span>Total contacts <i class="fas fa-users" aria-hidden="true"></i></span><strong th:text="${#lists.size(user.contacts)}"></strong><small>Saved in your contact book</small><div class="stat-accent"></div></a>
+    <div class="stat-card"><span>Contacts with email <i class="far fa-envelope" aria-hidden="true"></i></span><strong th:text="${#lists.size(user.contacts.?[email != null and email != ''])}"></strong><small>With an email address on file</small><div class="stat-accent pale"></div></div>
+    <div class="stat-card"><span>Contacts with phone <i class="fas fa-phone" aria-hidden="true"></i></span><strong th:text="${#lists.size(user.contacts.?[phone != null and phone != ''])}"></strong><small>With a phone number on file</small><div class="stat-accent pale"></div></div>
+</div>
+<div class="dashboard-grid">
+    <div class="panel">
+        <div class="panel-heading"><div><h2>Your contacts</h2><p>A glimpse into your personal contact book.</p></div><a th:href="@{/user/show-contacts/0}">View all &rarr;</a></div>
+        <div th:if="${#lists.isEmpty(user.contacts)}" class="empty-state"><span class="empty-icon"><i class="far fa-address-book" aria-hidden="true"></i></span><h3>Your contact book starts here</h3><p>Add your first connection to see it here.</p><a class="btn btn-primary" th:href="@{/user/add-contact}">Add your first contact</a></div>
+        <div th:unless="${#lists.isEmpty(user.contacts)}" class="table-responsive">
+            <table class="table crm-table"><thead><tr><th>Contact</th><th>Phone</th><th>Work</th><th><span class="sr-only">View contact</span></th></tr></thead><tbody>
+                <tr th:each="c, row : ${user.contacts}" th:if="${row.index lt 4}">
+                    <td><a class="contact-identity" th:href="@{'/user/'+${c.cId}+'/contact'}"><span class="letter-avatar" th:text="${#strings.isEmpty(c.cName) ? '?' : #strings.substring(c.cName,0,1)}"></span><span><strong th:text="${c.cName + ' ' + (c.secondName == null ? '' : c.secondName)}"></strong><small th:text="${c.email}"></small></span></a></td>
+                    <td th:text="${#strings.isEmpty(c.phone) ? '—' : c.phone}"></td><td th:text="${#strings.isEmpty(c.work) ? '—' : c.work}"></td>
+                    <td><a class="icon-link" th:href="@{'/user/'+${c.cId}+'/contact'}" aria-label="View contact"><i class="fas fa-arrow-right" aria-hidden="true"></i></a></td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="panel-footer" th:unless="${#lists.isEmpty(user.contacts)}"><span><span th:text="${#lists.size(user.contacts) lt 4 ? #lists.size(user.contacts) : 4}"></span> of <span th:text="${#lists.size(user.contacts)}"></span> contacts</span><a th:href="@{/user/show-contacts/0}">Open contact book &rarr;</a></div>
+    </div>
+    <div class="dashboard-aside">
+        <div class="panel"><div class="panel-heading"><h2><i class="far fa-user-circle" aria-hidden="true"></i> Your account</h2></div><div class="account-summary"><span class="letter-avatar avatar-large" th:text="${#strings.substring(user.name,0,1)}"></span><h3 th:text="${user.name}"></h3><p th:text="${user.email}"></p><span class="status-badge" th:text="${user.enabled ? 'Active account' : 'Inactive account'}"></span></div><a class="subtle-action" th:href="@{/user/profile}">View profile &rarr;</a></div>
+        <div class="panel"><div class="panel-heading"><h2>Your workspace</h2></div><div class="shortcut-list"><a th:href="@{/user/add-contact}"><i class="fas fa-user-plus" aria-hidden="true"></i> Save a new connection <span>&rarr;</span></a><a th:href="@{/user/show-contacts/0}"><i class="fas fa-search" aria-hidden="true"></i> Find a contact <span>&rarr;</span></a><a th:href="@{/user/settings}"><i class="fas fa-key" aria-hidden="true"></i> Change password <span>&rarr;</span></a></div></div>
+    </div>
+</div>
 </section>
-</body>
-</html>
+</body></html>

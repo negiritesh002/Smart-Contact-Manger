@@ -1,93 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "http://www.thymeleaf.org" th:replace = "normal/base::Layout(~{::section})">
-<head>
-  <meta charset="UTF-8">
-  <title>This is Show contacts page</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{normal/base::Layout(~{::section})}">
+<head><meta charset="UTF-8"><title>Smart CRM</title></head><body>
 <section>
-    <div class="card mr-3 ml-3">
-      <div class="card-body">
-        <h1 class="text-center">Your Contacts</h1>
-
-<!--          search filed-->
-          <div class="search-container my-3">
-                <input onkeyup="search()" id="search-input" type="text" class="form-control" placeholder="Search your contacts"/>
-
-              <div class="search-result">
-<!--                  result goes here-->
-
-              </div>
-          </div>
-        <div class = "table-responsive">
-        <table class="table">
-          <thead>
-          <tr>
-            <th scope="col">#ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="c : ${contacts}">
-            <th scope="row" th:text = "${'SCMUSER'+c.cId}">1</th>
-
-<!--            we want to display contact image in front of the name-->
-            <td >
-<!--              we set image path here-->
-              <img src="" class="my_profile_picture" th:src="@{'/img/'+${c.image}}" alt="profile image">
-              <span th:text="${c.cName}"></span></td>
-
-            <td >
-                <a href="" th:href="@{'/user/'+${c.cId}+'/contact'}">
-                    <span th:text="${c.email}"></span>
-                </a>
-            </td>
-
-            <td th:text="${c.phone}">@mdo</td>
-
-            <td>
-                <a href="#" th:onclick = "|deleteContact(${c.cId})|" class="btn btn-danger btn-sm">DELETE</a>
-
-              <form method="post" th:action="@{'/user/update-contact/'+${c.cId}}" class="mt-2">
-                  <button type="submit" class="btn btn-primary btn-sm">UPDATE</button>
-              </form>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        </div>
-
-<!--        pagination-->
-        <nav aria-label="Page navigation example" class="d-flex justify-content-center" th:if="${totalPages>1}">
-
-          <ul class="pagination">
-
-            <li th:if="${currentPage!=0}" class="page-item">
-              <a th:href="@{'/user/show-contacts/'+${currentPage-1}}" class="page-link" href="#">Previous</a></li>
-
-            <li th:classappend="${currentPage==i?'active':''}" th:each="i : ${#numbers.sequence(0,totalPages-1)}" class="page-item">
-              <a th:href="@{'/user/show-contacts/'+${i}}" class="page-link" href="#">
-              <span th:text="${i}"></span>
-            </a></li>
-
-            <li th:if="${currentPage!=totalPages-1}" class="page-item">
-              <a th:href="@{'/user/show-contacts/'+${currentPage+1}}" class="page-link" href="#">Next</a></li>
-
-          </ul>
-
-        </nav>
-
-      </div>
-    </div>
-    <script>
-        $(document).ready(() => {
-            $(".item").removeClass("active");
-            $("#contacts-link").addClass("active");
-        });
-    </script>
+<div class="page-heading"><div><h1>Contacts <span class="count-pill" th:text="${contacts.totalElements + ' total'}"></span></h1><p>Your people, organized in one place.</p></div><a class="btn btn-primary" th:href="@{/user/add-contact}"><i class="fas fa-plus" aria-hidden="true"></i> Add new contact</a></div>
+<div class="panel contacts-panel">
+    <div class="contact-toolbar"><div class="search-container"><label class="sr-only" for="search-input">Search contacts by name</label><i class="fas fa-search search-icon" aria-hidden="true"></i><input data-contact-search id="search-input" type="search" class="form-control" placeholder="Search contacts by name" aria-controls="contact-search-results" aria-expanded="false" autocomplete="off"><div id="contact-search-results" class="search-result" aria-live="polite"></div></div><span class="filter-label"><i class="fas fa-address-book" aria-hidden="true"></i> All contacts</span></div>
+    <div class="table-responsive"><table class="table crm-table"><thead><tr><th>Contact</th><th>Email</th><th>Phone</th><th>Work</th><th class="text-right">Actions</th></tr></thead><tbody>
+        <tr th:if="${contacts.empty}"><td colspan="5"><div class="empty-state"><span class="empty-icon"><i class="far fa-address-book" aria-hidden="true"></i></span><h3>No contacts yet</h3><p>Your saved contacts will appear here.</p><a class="btn btn-primary" th:href="@{/user/add-contact}">Add your first contact</a></div></td></tr>
+        <tr th:each="c : ${contacts}">
+            <td><a class="contact-identity" th:href="@{'/user/'+${c.cId}+'/contact'}"><span class="letter-avatar" th:text="${#strings.isEmpty(c.cName) ? '?' : #strings.substring(c.cName,0,1)}"></span><span><strong th:text="${c.cName + ' ' + (c.secondName == null ? '' : c.secondName)}"></strong><small th:text="${'Contact #' + c.cId}"></small></span></a></td>
+            <td th:text="${#strings.isEmpty(c.email) ? '—' : c.email}"></td><td th:text="${#strings.isEmpty(c.phone) ? '—' : c.phone}"></td><td th:text="${#strings.isEmpty(c.work) ? '—' : c.work}"></td>
+            <td><div class="row-actions"><a class="icon-link" th:href="@{'/user/'+${c.cId}+'/contact'}" aria-label="View contact" title="View contact"><i class="far fa-eye" aria-hidden="true"></i></a><form method="post" th:action="@{'/user/update-contact/'+${c.cId}}"><button type="submit" class="icon-link" aria-label="Edit contact" title="Edit contact"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button></form><button type="button" class="icon-link text-danger" th:onclick="|deleteContact(${c.cId})|" aria-label="Delete contact" title="Delete contact"><i class="far fa-trash-alt" aria-hidden="true"></i></button></div></td>
+        </tr>
+    </tbody></table></div>
+</div>
+<div class="contacts-footer"><span th:if="${contacts.totalElements gt 0}">Showing <strong th:text="${contacts.number * contacts.size + 1}"></strong>&ndash;<strong th:text="${contacts.number * contacts.size + contacts.numberOfElements}"></strong> of <strong th:text="${contacts.totalElements}"></strong> contacts</span><span th:if="${contacts.empty}">No contacts to display</span>
+    <nav aria-label="Contact pages" th:if="${totalPages gt 1}"><ul class="pagination mb-0"><li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}"><a class="page-link" th:href="${currentPage gt 0 ? '/user/show-contacts/' + (currentPage-1) : '#'}" th:attr="aria-disabled=${currentPage == 0}">Previous</a></li><li class="page-item" th:each="i : ${#numbers.sequence(0,totalPages-1)}" th:if="${i == 0 or i == totalPages-1 or (i ge currentPage-2 and i le currentPage+2)}" th:classappend="${currentPage == i ? 'active' : ''}"><a class="page-link" th:href="@{'/user/show-contacts/'+${i}}" th:text="${i+1}" th:attr="aria-current=${currentPage == i ? 'page' : null}"></a></li><li class="page-item" th:classappend="${currentPage == totalPages-1 ? 'disabled' : ''}"><a class="page-link" th:href="${currentPage lt totalPages-1 ? '/user/show-contacts/' + (currentPage+1) : '#'}" th:attr="aria-disabled=${currentPage == totalPages-1}">Next</a></li></ul></nav>
+</div>
 </section>
-</body>
-</html>
+</body></html>

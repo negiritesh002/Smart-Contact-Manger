@@ -1,121 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "http://www.thymeleaf.org" th:replace = "normal/base::Layout(~{::section})">
-<head>
-    <meta charset="UTF-8">
-    <title>This is dashboard page</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{normal/base::Layout(~{::section})}">
+<head><meta charset="UTF-8"><title>Smart CRM</title></head><body>
 <section>
-    <div class="card mr-3 ml-3">
-        <div class="card-body">
-
-            <h1 class="text-center">Add Contact</h1>
-
-            <div class="container-fluid mt-1">
-                <div class="row">
-                    <div class="col-md-8 offset-md-2">
-                        <form action="#"
-                            th:object="${contact}"
-                            enctype="multipart/form-data"
-                            method="POST"
-                            th:action="@{/user/process-contact}"
-                            class="mt-2"
-                        >
-<!--                            field for the first name-->
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-test mr-3">
-                                        <i class="fa fa-plus"></i>
-                                    </div>
-                                </div>
-
-                                <input required type="text" id="firstName" name="cName" placeholder="Enter Your first name here" class="form-control">
-                            </div>
-
-<!--                            second name field-->
-                            <div class="input-group mt-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-test mr-3">
-                                        <i class="fas fa-user-alt"></i>
-                                    </div>
-                                </div>
-
-                                <input required type="text" id="secondName" name="secondName" placeholder="Enter Your Second name here" class="form-control">
-
-                            </div>
-
-<!--                            phone number filed-->
-                            <div class="input-group mt-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-test mr-3">
-                                        <i class="fas fa-phone"></i>
-                                    </div>
-                                </div>
-
-                                <input required type="number" id="phone" name="phone" placeholder="Enter Your phone number here" class="form-control">
-
-                            </div>
-
-<!--                            email field-->
-                            <div class="input-group mt-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-test mr-3">
-                                        @
-                                    </div>
-                                </div>
-
-                                <input required type="email" id= "email" name="email" placeholder="Enter Your Email here" class="form-control">
-
-                            </div>
-
-<!--                            work field-->
-                            <div class="input-group mt-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-test mr-3">
-                                        <i class="fas fa-briefcase"></i>
-                                    </div>
-                                </div>
-
-                                <input required type="text" id="work" name="work" placeholder="Enter Your work number here" class="form-control">
-
-                            </div>
-
-<!--                            discription field-->
-                            <div class="form-group mt-3">
-                                <textarea id="mytextarea" name="description" rows="20" class="form-control" placeholder="Write about yourself"></textarea>
-                            </div>
-
-<!--                            image field-->
-                            <div class="custom-file">
-                                <input type="file" name="profileImage" id="customFile">
-                                <label class="custom-file-label" for="customFile">Choose file</label>
-                            </div>
-
-<!--                            add contact button-->
-                            <div class="container text-center mt-3">
-                                <button class="btn btn-outline-primary">Save Contact</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="page-heading"><div><div class="breadcrumb-label"><a th:href="@{/user/show-contacts/0}">Contacts</a> / Add new contact</div><h1>Add new contact</h1><p>Keep the details that help you stay connected.</p></div><a class="text-link" th:href="@{/user/show-contacts/0}">&larr; Back to contacts</a></div>
+<form class="contact-editor" th:action="@{/user/process-contact}" method="post" enctype="multipart/form-data">
+    <div class="panel">
+        <div class="photo-upload"><span class="upload-avatar"><i class="far fa-user" aria-hidden="true"></i></span><div><label for="customFile">Contact photo</label><p>Choose an image from your device. Optional.</p><input type="file" name="profileImage" id="customFile" accept="image/*"></div></div>
+        <div class="form-section"><div class="section-heading"><h2>Basic information</h2><span>Contact details</span></div><div class="form-grid"><div class="form-group"><label for="firstName">First name <span class="required-mark">*</span></label><input id="firstName" name="cName" type="text" class="form-control" placeholder="First name" required></div><div class="form-group"><label for="secondName">Last name <span class="required-mark">*</span></label><input id="secondName" name="secondName" type="text" class="form-control" placeholder="Last name" required></div><div class="form-group"><label for="email">Email address <span class="required-mark">*</span></label><input id="email" name="email" type="email" class="form-control" placeholder="Email address" required></div><div class="form-group"><label for="phone">Phone number <span class="required-mark">*</span></label><input id="phone" name="phone" type="tel" class="form-control" placeholder="Phone number" required></div></div></div>
+        <div class="form-section"><div class="section-heading"><h2>Professional details</h2><span>Work &amp; organization</span></div><div class="form-group mb-0"><label for="work">Work / occupation <span class="required-mark">*</span></label><input id="work" name="work" type="text" class="form-control" placeholder="Work or organization" required></div></div>
+        <div class="form-section"><div class="section-heading"><h2>Notes &amp; context</h2><span>Optional</span></div><label for="mytextarea" class="sr-only">Contact notes</label><textarea id="mytextarea" name="description" class="form-control" rows="5" placeholder="Add notes about this contact"></textarea></div>
     </div>
-
-<!--    tinymce script-->
-    <script src="https://cdn.tiny.cloud/1/nz8ho7k8kgt8ju0ggystv4he4uip09ukny5mk395vzga7lr6/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
-
-    <script>
-        tinymce.init({
-          selector: '#mytextarea'
-        });
-    </script>
-    <script>
-        $(document).ready(() => {
-            $(".item").removeClass("active");
-            $("#add-link").addClass("active");
-        });
-    </script>
+    <div class="editor-footer"><span><i class="fas fa-info-circle" aria-hidden="true"></i> Fields marked * are required.</span><div><a class="btn btn-light" th:href="@{/user/show-contacts/0}">Cancel</a><button class="btn btn-primary" type="submit"><i class="fas fa-check" aria-hidden="true"></i> Save contact</button></div></div>
+</form>
+<script src="https://cdn.tiny.cloud/1/nz8ho7k8kgt8ju0ggystv4he4uip09ukny5mk395vzga7lr6/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+<script>if (window.tinymce) { tinymce.init({selector:'#mytextarea', height:260, menubar:false}); }</script>
 </section>
-</body>
-</html>
+</body></html>

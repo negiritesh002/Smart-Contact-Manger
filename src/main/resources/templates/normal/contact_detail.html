@@ -1,56 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "http://www.thymeleaf.org" th:replace = "normal/base::Layout(~{::section})">
-<head>
-    <meta charset="UTF-8">
-    <title>This is dashboard page</title>
-</head>
-<body>
-<section>
-    <div class="card mr-3 ml-3" th:if="${contact}">
-        <div class="card-body">
-            <div class="container text-center">
-                <img src="" style="height: 200px ; width: 200px;" class="my_profile_picture" th:src="@{'/img/'+${contact.image}}" alt="profile image">
-                <h3 class="mt-3" ><span th:text="${contact.cName}"></span>(<span th:text="${contact.secondName}"></span>)</h3>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#ID</th>
-                        <th scope="col">SCMUSER <span th:text="${contact.cId}"></span></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">Email</th>
-                        <td><span th:text="${contact.email}"></span></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Phone</th>
-                        <td><span th:text="${contact.phone}"></span></td>
-                    </tr>
-
-                    <tr>
-                        <th scope="row">Work</th>
-                        <td><span th:text="${contact.work}"></span></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-<!--                we show description here-->
-                <div class="discription mt-3">
-                    <th:block th:utext="${contact.description}"></th:block>
-                </div>
-
-                <div class="container mt-3">
-                    <button th:onclick = "|deleteContact(${contact.cId})|" class="btn btn-danger btn-sm btn-block">DELETE</button>
-                    <form method="post" th:action="@{'/user/update-contact/'+${contact.cId}}" class="mt-2">
-                        <button type="submit" class="btn btn-block btn-primary btn-sm">UPDATE</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <h1 class="text-center p-3 bg-danger text-white" th:unless="${contact}">You don't have permission to access this contact!!!</h1>
-</section>
-</body>
-</html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{normal/base::Layout(~{::section})}">
+<head><meta charset="UTF-8"><title>Contact details</title></head><body><section>
+<div th:if="${contact}">
+    <div class="page-heading"><div><div class="breadcrumb-label"><a th:href="@{/user/show-contacts/0}">Contacts</a> / Contact details</div><h1 th:text="${contact.cName + ' ' + (contact.secondName == null ? '' : contact.secondName)}"></h1><p>Contact details and notes.</p></div><form method="post" th:action="@{'/user/update-contact/'+${contact.cId}}"><button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Edit contact</button></form></div>
+    <div class="panel profile-hero"><div class="profile-cover"></div><div class="profile-header"><img class="profile-avatar" th:src="@{'/img/'+${contact.image}}" alt="Contact photo"><div><h2 th:text="${contact.cName + ' ' + (contact.secondName == null ? '' : contact.secondName)}"></h2><p th:text="${contact.work}"></p></div><div class="profile-count"><small>Contact ID</small><strong th:text="${contact.cId}"></strong></div></div></div>
+    <div class="profile-grid"><div class="panel"><div class="panel-heading"><h2>Contact information</h2></div><div class="profile-details"><div><label>Email address</label><p th:text="${#strings.isEmpty(contact.email) ? '—' : contact.email}"></p></div><div><label>Phone number</label><p th:text="${#strings.isEmpty(contact.phone) ? '—' : contact.phone}"></p></div><div class="full-width"><label>Work / occupation</label><p th:text="${#strings.isEmpty(contact.work) ? '—' : contact.work}"></p></div><div class="full-width"><label>Notes &amp; context</label><div class="bio-content" th:if="${#strings.isEmpty(contact.description)}">No notes added.</div><div class="bio-content" th:unless="${#strings.isEmpty(contact.description)}" th:utext="${contact.description}"></div></div></div></div><div class="panel"><div class="panel-heading"><h2>Manage contact</h2></div><a class="subtle-action" th:href="@{/user/show-contacts/0}">Back to all contacts &rarr;</a><div class="px-3 pb-3"><button type="button" class="btn btn-danger btn-block" th:onclick="|deleteContact(${contact.cId})|">Delete contact</button></div></div></div>
+</div>
+<div th:unless="${contact}" class="panel empty-state"><h1>Contact unavailable</h1><p>You do not have permission to view this contact.</p><a th:href="@{/user/show-contacts/0}" class="btn btn-primary">Back to contacts</a></div>
+</section></body></html>
