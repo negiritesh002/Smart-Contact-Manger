@@ -29,8 +29,8 @@ public class EmailService {
 
             javaMailSender.send(mimeMessage);
             isEmailSent = true;
-        } catch (MessagingException e) {
-            log.error("Error while sending email: {}", e.getMessage());
+        } catch (MessagingException | org.springframework.mail.MailException e) {
+            log.warn("Password recovery email could not be sent. Check SMTP configuration.");
             isEmailSent = false;
         }
         return isEmailSent;
